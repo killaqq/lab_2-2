@@ -1,0 +1,152 @@
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#define EPS 0.00001
+
+double leftRiemannSum(double a, double b, int n);
+double rightRiemannSum(double a, double b, int n);
+double trapezoidalRule(double a, double b, int n);
+double simpsonsRule(double a, double b, int n);
+double f(double x);
+
+int main()
+{
+    int option, n;
+    double a, b, I = 0.0, I1 = 0.0, I2 = 0.0;
+
+    printf("Enter the left boundaries (a, b): ");
+    scanf("%lf%lf", &a, &b);
+    printf("Enter the number of partition intervals (n): ");
+    scanf("%d", &n);
+    
+    printf("[1] Left Riemann sum\n");
+    printf("[2] Right Riemann sum\n");
+    printf("[3] Trapezoidal rule\n");
+    printf("[4] Simpson's rule\n");
+    printf(">> ");
+    scanf("%d", &option);
+
+    while (option < 1 && option > 4)
+    {
+        printf("Wrong input!\n>> ");
+        scanf("%d", &option);
+    }
+
+    switch (option)
+    {
+    case 1:// метод лівих прямокутників
+        I = leftRiemannSum(a, b, n);
+        printf("Input data: a = %lf, b = %lf, n = %d\nSum = %lf\n", a, b, n, I);
+
+        for (n = 2; ; n += 2)
+        {
+            I1 = leftRiemannSum(a, b, n);
+            I2 = leftRiemannSum(a, b, n + 2);
+            if (fabs(I2 - I1) < EPS) break;
+        }
+
+        printf("%lf => n = %d\n", I2, n);
+        break;
+    case 2: // метод правих прямокутників
+        I = rightRiemannSum(a, b, n);
+        printf("Input data: a = %lf, b = %lf, n = %d\nSum = %lf\n", a, b, n, I);
+
+        for (n = 2; ; n += 2)
+        {
+            I1 = rightRiemannSum(a, b, n);
+            I2 = rightRiemannSum(a, b, n + 2);
+            if (fabs(I2 - I1) < EPS) break;
+        }
+
+        printf("%lf => n = %d\n", I2, n);
+        break;
+    case 3: // метод трапецій
+        I = trapezoidalRule(a, b, n);
+        printf("Input data: a = %lf, b = %lf, n = %d\nSum = %lf\n", a, b, n, I);
+
+        for (n = 2; ; n += 2)
+        {
+            I1 = trapezoidalRule(a, b, n);
+            I2 = trapezoidalRule(a, b, n + 2);
+            if (fabs(I2 - I1) < EPS) break;
+        }
+
+        printf("%lf => n = %d\n", I2, n);
+        break;
+    case 4: // метод парабол
+        I = simpsonsRule(a, b, n);
+        printf("Input data: a = %lf, b = %lf, n = %d\nSum = %lf\n", a, b, n, I);
+
+        for (n = 2; ; n += 2)
+        {
+            I1 = simpsonsRule(a, b, n);
+            I2 = simpsonsRule(a, b, n + 2);
+            if (fabs(I2 - I1) < EPS) break;
+        }
+
+        printf("%lf => n = %d\n", I2, n);
+        break;
+    }
+
+    return 0;
+}
+
+double leftRiemannSum(double a, double b, int n)
+{
+    double x = a, h = (b - a) / n, s = 0;
+
+    for (int i = 0; i < n; i++)
+    {
+        s += f(x);
+        x += h;
+    }
+
+    return s * h;
+}
+
+double rightRiemannSum(double a, double b, int n)
+{
+    double x = a, h = (b - a) / n, s = 0;
+
+    for (int i = 1; i <= n; i++)
+    {
+        x += h;
+        s += f(x);
+    }
+
+    return s * h;
+}
+
+double trapezoidalRule(double a, double b, int n)
+{
+    double x = a, h = (b - a) / n, s = 0;
+
+    for (int i = 1; i < n; i++)
+    {
+        s += (f(x) + f(x + h)) / 2;
+        x += h;
+    }
+
+    return s * h;
+}
+
+double simpsonsRule(double a, double b, int n)
+{
+    double x = a, h = (b - a) / n, s = 0;
+
+    for (int i = 1; i < n - 1; i++)
+    {
+        s += (f(x) + 4 * f(x + h / 2) + f(x + h)) / 6;
+        x += h;
+    }
+
+    return s * h;
+}
+
+double f(double x)
+{
+    return (1.0 / (4.0 - x * x));
+}
