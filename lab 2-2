@@ -29,7 +29,7 @@ int main()
     printf(">> ");
     scanf("%d", &option);
 
-    while (option < 1 && option > 4)
+    while (option < 1 || option > 4)
     {
         printf("Wrong input!\n>> ");
         scanf("%d", &option);
